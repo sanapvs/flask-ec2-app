@@ -1,6 +1,6 @@
 # Tally: Flask + SQLite3 on AWS EC2
 
-Live site: http://YOUR-EC2-PUBLIC-DNS (replace with your instance's Public IPv4 DNS)
+Live site: http://http://ec2-18-190-156-6.us-east-2.compute.amazonaws.com (replace with your instance's Public IPv4 DNS)
 
 Tally is a small Flask web app deployed on an Ubuntu Server 24.04 LTS EC2 instance behind Apache and mod_wsgi, with a SQLite3 database.
 
