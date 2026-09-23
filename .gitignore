@@ -1,0 +1,9 @@
+# created on the server at runtime
+users.db
+uploads/
+secret_key
+
+__pycache__/
+*.pyc
+.venv/
+.DS_Store

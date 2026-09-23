@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}My profile{% endblock %}
+
+{% block content %}
+{% macro upload_form(button_label) %}
+<form class="upload-form" method="post" action="{{ url_for('upload') }}" enctype="multipart/form-data">
+  <label class="dropzone">
+    <input type="file" name="textfile" accept=".txt,text/plain" required>
+    <span class="dz-title">Choose a .txt file</span>
+    <span class="dz-hint">or drag it here</span>
+  </label>
+  <button type="submit" class="btn btn-secondary">{{ button_label }}</button>
+</form>
+{% endmacro %}
+
+<section class="card">
+  <h1>Hello, {{ user.firstname }}</h1>
+  <p class="lede">You're logged in as {{ user.username }}. These are the details saved with your account.</p>
+  <dl class="details">
+    <dt>First name</dt><dd>{{ user.firstname }}</dd>
+    <dt>Last name</dt><dd>{{ user.lastname }}</dd>
+    <dt>Email</dt><dd>{{ user.email }}</dd>
+    <dt>Address</dt><dd class="address">{{ user.address }}</dd>
+  </dl>
+</section>
+
+<section class="card">
+  <h2>Your file</h2>
+  {% if user.stored_filename %}
+    {% set count = user.word_count %}
+    {% set shown = [count, 150]|min %}
+    {% set strokes = ['M8 8v25', 'M14.5 6.5v27', 'M21 7.5v26', 'M27.5 8.5v24'] %}
+    <p class="file-name">{{ user.filename }}</p>
+
+    <div class="notebook">
+      <p class="count">{{ '{:,}'.format(count) }} word{{ '' if count == 1 else 's' }}</p>
+      {% if shown %}
+        <div class="tally" aria-hidden="true">
+          {% for i in range(shown // 5) %}
+            <svg viewBox="0 0 40 40" style="--i: {{ i }}"><path pathLength="1" d="{{ strokes|join(' ') }}"/><path class="slash" pathLength="1" d="M3 27.5L33 11"/></svg>
+          {% endfor %}
+          {% if shown % 5 %}
+            <svg viewBox="0 0 40 40" style="--i: {{ shown // 5 }}"><path pathLength="1" d="{{ strokes[:shown % 5]|join(' ') }}"/></svg>
+          {% endif %}
+        </div>
+      {% endif %}
+      {% if count > shown %}
+        <p class="tally-more">and {{ '{:,}'.format(count - shown) }} more</p>
+      {% endif %}
+    </div>
+
+    <a class="btn btn-primary" href="{{ url_for('download') }}">Download file</a>
+    <details class="replace">
+      <summary>Upload a different file</summary>
+      {{ upload_form('Upload file') }}
+    </details>
+  {% else %}
+    <div class="notebook">
+      <p class="count empty">No file yet</p>
+    </div>
+    <p class="lede">Upload a .txt file to store it with your account and see its word count.</p>
+    {{ upload_form('Upload file') }}
+  {% endif %}
+</section>
+{% endblock %}

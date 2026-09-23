@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Create account{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h1>Create your account</h1>
+  <p class="lede">Pick a username, add your details and attach a text file. We'll save everything and count the words in your file.</p>
+
+  <form method="post" action="{{ url_for('register') }}" enctype="multipart/form-data">
+    <fieldset>
+      <legend><span class="step">1</span>Account</legend>
+      <div class="field">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required
+               pattern="[A-Za-z0-9_]{3,30}" title="3-30 letters, numbers or underscores"
+               autocomplete="username" aria-describedby="username-hint"
+               value="{{ form.get('username', '') }}">
+        <p class="hint" id="username-hint">3-30 letters, numbers or underscores.</p>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required minlength="6"
+                 autocomplete="new-password" aria-describedby="password-hint">
+          <p class="hint" id="password-hint">At least 6 characters.</p>
+        </div>
+        <div class="field">
+          <label for="confirm">Confirm password</label>
+          <input type="password" id="confirm" name="confirm" required minlength="6"
+                 autocomplete="new-password">
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="step">2</span>Your details</legend>
+      <div class="row">
+        <div class="field">
+          <label for="firstname">First name</label>
+          <input type="text" id="firstname" name="firstname" required autocomplete="given-name"
+                 value="{{ form.get('firstname', '') }}">
+        </div>
+        <div class="field">
+          <label for="lastname">Last name</label>
+          <input type="text" id="lastname" name="lastname" required autocomplete="family-name"
+                 value="{{ form.get('lastname', '') }}">
+        </div>
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required autocomplete="email"
+               value="{{ form.get('email', '') }}">
+      </div>
+      <div class="field">
+        <label for="address">Address</label>
+        <textarea id="address" name="address" rows="3" required
+                  autocomplete="street-address">{{ form.get('address', '') }}</textarea>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="step">3</span>Text file</legend>
+      <label class="dropzone">
+        <input type="file" name="textfile" accept=".txt,text/plain" aria-describedby="file-hint">
+        <span class="dz-title">Choose a .txt file</span>
+        <span class="dz-hint">or drag it here</span>
+      </label>
+      <p class="hint" id="file-hint">We'll store it and show its word count on your profile. You can also add it later.</p>
+    </fieldset>
+
+    <button type="submit" class="btn btn-primary btn-block">Create account</button>
+    <p class="switch">Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+  </form>
+</section>
+{% endblock %}

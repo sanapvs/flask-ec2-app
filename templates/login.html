@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Log in{% endblock %}
+
+{% block content %}
+<section class="card narrow">
+  <h1>Log in</h1>
+  <p class="lede">Enter your username and password to see your saved details and file.</p>
+
+  <form method="post" action="{{ url_for('login') }}">
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required autofocus
+             autocomplete="username" value="{{ username }}">
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required
+             autocomplete="current-password">
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">Log in</button>
+    <p class="switch">New here? <a href="{{ url_for('index') }}">Create an account</a></p>
+  </form>
+</section>
+{% endblock %}

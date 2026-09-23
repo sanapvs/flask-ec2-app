@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% endblock %} | Tally</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Young+Serif&display=swap">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('profile') if session.username else url_for('index') }}">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M9 8v25M15 7v26M21 8v25M27 7v26"/><path d="M4 28L32 11"/></svg>
+      Tally
+    </a>
+    <nav aria-label="Main">
+      {% if session.username %}
+        <a href="{{ url_for('profile') }}" {% if request.endpoint == 'profile' %}aria-current="page"{% endif %}>My profile</a>
+        <a href="{{ url_for('logout') }}">Log out</a>
+      {% else %}
+        <a href="{{ url_for('index') }}" {% if request.endpoint in ('index', 'register') %}aria-current="page"{% endif %}>Create account</a>
+        <a href="{{ url_for('login') }}" {% if request.endpoint == 'login' %}aria-current="page"{% endif %}>Log in</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main>
+    {% with errors = get_flashed_messages(category_filter=['error']) %}
+      {% if errors|length == 1 %}
+        <p class="flash flash-error" role="alert">{{ errors[0] }}</p>
+      {% elif errors %}
+        <div class="flash flash-error" role="alert">
+          <ul>{% for message in errors %}<li>{{ message }}</li>{% endfor %}</ul>
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% with notes = get_flashed_messages(with_categories=true, category_filter=['success', 'info']) %}
+      {% for category, message in notes %}
+        <p class="flash flash-{{ category }}" role="status">{{ message }}</p>
+      {% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">Built with Flask and SQLite3, served by Apache on AWS EC2.</footer>
+
+  <script>
+    // Show the chosen file's name inside the drop area.
+    document.querySelectorAll('.dropzone input[type="file"]').forEach(function (input) {
+      var zone = input.closest('.dropzone');
+      var title = zone.querySelector('.dz-title');
+      var hint = zone.querySelector('.dz-hint');
+      var defaults = [title.textContent, hint.textContent];
+      input.addEventListener('change', function () {
+        var file = input.files[0];
+        zone.classList.toggle('has-file', !!file);
+        title.textContent = file ? file.name : defaults[0];
+        hint.textContent = file ? (file.size / 1024).toFixed(1) + ' KB. Click to choose a different file.' : defaults[1];
+      });
+      ['dragenter', 'dragover'].forEach(function (type) {
+        input.addEventListener(type, function () { zone.classList.add('dragging'); });
+      });
+      ['dragleave', 'drop'].forEach(function (type) {
+        input.addEventListener(type, function () { zone.classList.remove('dragging'); });
+      });
+    });
+  </script>
+</body>
+</html>
